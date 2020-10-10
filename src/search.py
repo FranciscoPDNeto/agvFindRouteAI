@@ -127,7 +127,6 @@ elif (algorithm.lower() == "dfs"):
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = dfsSearch(initialGraph, float("Inf"), [])
 elif (algorithm.lower() == "ids"):
-    # TODO Pensar na profundidade máxima do algoritmo
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = idsSearch(initialGraph, y * x)
 elif (algorithm.lower() == "a*"):
