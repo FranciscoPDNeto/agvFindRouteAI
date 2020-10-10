@@ -13,18 +13,6 @@ class Output:
     def __str__(self):
         return "{} {} [{}, {}]".format(self.numSteps, self.numTimesPassedLocationPoint, \
             self.coordsInitPoint[0], self.coordsInitPoint[1])
-
-def getInitialGraph(width, height, map):
-    possibleStartGraphs = []
-    for lineIdx, line in enumerate(map):
-        for valueIdx, value in enumerate(line):
-            if (lineIdx in [0, width - 1] or valueIdx in [0, height - 1]) and value != constant.OBSTACLE:
-                coord = (lineIdx, valueIdx)
-                possibleStartGraphs.append(Graph(State(coord, 1, 0, \
-                    Output(1, 1 if value == constant.LOCALIZATION_POINT else 0, coord)), []))
-    
-    return Graph(State((-2, -2)), possibleStartGraphs)
-
                     
 
 algorithm = sys.argv[1]
@@ -86,6 +74,18 @@ class Graph:
                 self.addChild(move, self.root.cost + 1 + heuristic(move), self, explored)
 
 
+def getInitialGraph(width, height, map) -> Graph:
+    possibleStartGraphs = []
+    for lineIdx, line in enumerate(map):
+        for valueIdx, value in enumerate(line):
+            if (lineIdx in [0, width - 1] or valueIdx in [0, height - 1]) and value != constant.OBSTACLE:
+                coord = (lineIdx, valueIdx)
+                possibleStartGraphs.append(Graph(State(coord, 1, 0, \
+                    Output(1, 1 if value == constant.LOCALIZATION_POINT else 0, coord)), []))
+    
+    return Graph(State((-2, -2)), possibleStartGraphs)
+
+
 def bfsSearch():
     #TODO
     return "bfsSearch"
@@ -106,7 +106,7 @@ def dfsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
         if possibleGoal != None:
             return possibleGoal
 
-def idsSearch(initialGraph : Graph, maxDepth : int):
+def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
 
     for depth in range(int(maxDepth)):
         explored = []
