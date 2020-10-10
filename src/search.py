@@ -104,9 +104,15 @@ def dfsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
         if possibleGoal != None:
             return possibleGoal
 
-def idsSearch():
-    #TODO
-    return "idsSearch"
+def idsSearch(initialGraph : Graph, maxDepth : int):
+
+    for depth in range(int(maxDepth)):
+        explored = []
+        output = dfsSearch(initialGraph, depth, explored)
+        if output:
+            return output
+
+    return None
 
 def aStarSearch():
     #TODO
@@ -118,10 +124,14 @@ if (algorithm.lower() == "bfs"):
 elif (algorithm.lower() == "dfs"):
     for initialState in getPossibleStartCoords(y, x, map):
         bestRoute = dfsSearch(Graph(initialState), float("Inf"), [])
-        if bestRoute != None:
+        if bestRoute:
             break
 elif (algorithm.lower() == "ids"):
-    bestRoute = idsSearch()
+    # TODO Pensar na profundidade máxima do algoritmo
+    for initialState in getPossibleStartCoords(y, x, map):
+        bestRoute = idsSearch(Graph(initialState), 10)
+        if bestRoute:
+            break
 elif (algorithm.lower() == "a*"):
     bestRoute = aStarSearch()
 else:
