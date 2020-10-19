@@ -93,8 +93,7 @@ def getInitialGraph(width, height, map) -> Graph:
 
 
 def bfsSearch(graph : Graph) -> Output:
-    visitedNodesCoords = [graph.root.coord]
-    graph.expandChildren(visitedNodesCoords)
+    visitedNodesCoords = []
     nodesQueue = graph.children
 
     while nodesQueue:
@@ -105,8 +104,6 @@ def bfsSearch(graph : Graph) -> Output:
         visitedNodesCoords.append(currentState.coord)
         node.expandChildren(visitedNodesCoords)
         nodesQueue = nodesQueue + node.children
-
-    return None
 
 def dlsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
     currentState = currentGraph.root
@@ -139,13 +136,14 @@ def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
 
 def aStarSearch(graph):
     goalCoords = getGoalCoords(map)
+    # Define a heurística do A*, que será a Distância de Manhattan.
     manhattanDistanceHeuristic = lambda move : abs(move[0] - goalCoords[0]) + abs(move[1] - goalCoords[1])
 
-    visitedNodesCoords = [graph.root.coord]
-    graph.expandChildren(visitedNodesCoords, manhattanDistanceHeuristic)
+    visitedNodesCoords = []
     nodesList = graph.children
 
     while nodesList:
+        # Busca e remove o nó expandido com o menor custo atualmente.
         node = min(nodesList, key=lambda node: node.root.cost)
         nodesList.remove(node)
         currentState = node.root
@@ -154,8 +152,6 @@ def aStarSearch(graph):
         visitedNodesCoords.append(currentState.coord)
         node.expandChildren(visitedNodesCoords, manhattanDistanceHeuristic)
         nodesList = nodesList + node.children
-
-    return None
 
 bestRoute = None
 if (algorithm.lower() == "bfs"):
