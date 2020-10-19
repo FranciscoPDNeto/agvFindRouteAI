@@ -37,6 +37,9 @@ class Graph:
         self.root = root
         self.parent = parent
         self.children = children
+    
+    def hasChildren(self):
+        return self.children != []
 
     def addChild(self, move : tuple, cost : float, explored : list) -> None:
         if (move[0] > 0 and move[0] < y and \
@@ -115,7 +118,8 @@ def dlsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
 
     explored.append(currentState.coord)
 
-    currentGraph.expandChildren(explored)
+    if not currentGraph.hasChildren():
+        currentGraph.expandChildren(explored)
     for child in currentGraph.children:
         possibleGoal = dlsSearch(child, maxDepth - 1, explored)
         if possibleGoal != None:
@@ -131,9 +135,6 @@ def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
         output = dlsSearch(initialGraph, depth, explored)
         if output:
             return output
-        # Reinicializa o grafo inicial para os primeiros valores para a próxima
-        # iteração.
-        initialGraph = getInitialGraph(y, x, industryMap)
 
     return None
 
