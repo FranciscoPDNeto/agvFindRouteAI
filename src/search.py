@@ -87,21 +87,18 @@ def getInitialGraph(width, height, map) -> Graph:
 
 
 def bfsSearch(graph : Graph) -> Output:
-    nodesQueue = []
     visitedNodesCoords = [graph.root.coord]
     graph.expandChildren(visitedNodesCoords)
-    nextDepthNodesQueue = graph.children
+    nodesQueue = graph.children
 
-    while nextDepthNodesQueue:
-        nodesQueue = nextDepthNodesQueue
-        nextDepthNodesQueue = []
-        for node in nodesQueue:
-            currentState = node.root
-            if currentState.coord[0] >= 0 and map[currentState.coord[0]][currentState.coord[1]] == constant.COLLECT_POINT:
-                return currentState.output
-            visitedNodesCoords.append(currentState.coord)
-            node.expandChildren(visitedNodesCoords)
-            nextDepthNodesQueue = nextDepthNodesQueue + node.children
+    while nodesQueue:
+        node = nodesQueue.pop(0)
+        currentState = node.root
+        if currentState.coord[0] >= 0 and map[currentState.coord[0]][currentState.coord[1]] == constant.COLLECT_POINT:
+            return currentState.output
+        visitedNodesCoords.append(currentState.coord)
+        node.expandChildren(visitedNodesCoords)
+        nodesQueue = nodesQueue + node.children
 
     return None
 
