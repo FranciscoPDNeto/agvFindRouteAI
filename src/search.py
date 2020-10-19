@@ -86,9 +86,24 @@ def getInitialGraph(width, height, map) -> Graph:
     return Graph(State((-2, -2)), possibleStartGraphs)
 
 
-def bfsSearch():
-    #TODO
-    return "bfsSearch"
+def bfsSearch(graph : Graph) -> Output:
+    nodesQueue = []
+    visitedNodesCoords = [graph.root.coord]
+    graph.expandChildren(visitedNodesCoords)
+    nextDepthNodesQueue = graph.children
+
+    while nextDepthNodesQueue:
+        nodesQueue = nextDepthNodesQueue
+        nextDepthNodesQueue = []
+        for node in nodesQueue:
+            currentState = node.root
+            if currentState.coord[0] >= 0 and map[currentState.coord[0]][currentState.coord[1]] == constant.COLLECT_POINT:
+                return currentState.output
+            visitedNodesCoords.append(currentState.coord)
+            node.expandChildren(visitedNodesCoords)
+            nextDepthNodesQueue = nextDepthNodesQueue + node.children
+
+    return None
 
 def dlsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
     currentState = currentGraph.root
@@ -125,7 +140,8 @@ def aStarSearch():
 
 bestRoute = None
 if (algorithm.lower() == "bfs"):
-    bestRoute = bfsSearch()
+    initialGraph = getInitialGraph(y, x, map)
+    bestRoute = bfsSearch(initialGraph)
 elif (algorithm.lower() == "dfs"):
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = dfsSearch(initialGraph, [])
