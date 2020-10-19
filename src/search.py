@@ -154,17 +154,14 @@ def aStarSearch(graph):
         nodesList = nodesList + node.children
 
 bestRoute = None
+initialGraph = getInitialGraph(y, x, industryMap)
 if (algorithm.lower() == "bfs"):
-    initialGraph = getInitialGraph(y, x, industryMap)
     bestRoute = bfsSearch(initialGraph)
 elif (algorithm.lower() == "dfs"):
-    initialGraph = getInitialGraph(y, x, industryMap)
     bestRoute = dfsSearch(initialGraph, [])
 elif (algorithm.lower() == "ids"):
-    initialGraph = getInitialGraph(y, x, industryMap)
     bestRoute = idsSearch(initialGraph, y * x)
 elif (algorithm.lower() == "a_star"):
-    initialGraph = getInitialGraph(y, x, industryMap)
     bestRoute = aStarSearch(initialGraph)
 else:
     print("Wrong algorithm passed, please insert a valid one.")
