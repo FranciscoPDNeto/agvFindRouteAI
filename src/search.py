@@ -131,6 +131,9 @@ def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
         output = dlsSearch(initialGraph, depth, explored)
         if output:
             return output
+        # Reinicializa o grafo inicial para os primeiros valores para a próxima
+        # iteração.
+        initialGraph = getInitialGraph(y, x, industryMap)
 
     return None
 
