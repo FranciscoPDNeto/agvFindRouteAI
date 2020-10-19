@@ -59,7 +59,7 @@ class Graph:
     def __str__(self):
         return "State {} from parent {} from children {}".format(self.root.coord, self.parent, self.children)
 
-    def expandChildren(self, explored : list, heuristic : bool = False) -> None:
+    def expandChildren(self, explored : list, heuristic = None) -> None:
         # Respectivamente BAIXO, CIMA, ESQUERDA, DIREITA.
         possibleMoves = [(self.root.coord[0] + 1, self.root.coord[1]),\
             (self.root.coord[0] - 1, self.root.coord[1]),\
@@ -71,8 +71,14 @@ class Graph:
                 self.addChild(move, self.root.cost + 1, explored)
         else:
             for move in possibleMoves:
-                self.addChild(move, self.root.cost + 1 + heuristic(move), self, explored)
+                self.addChild(move, self.root.cost + 1 + heuristic(move), explored)
 
+def getGoalCoords(map) -> tuple:
+    for lineIdx, line in enumerate(map):
+        for valueIdx, value in enumerate(line):
+            if value == constant.COLLECT_POINT:
+                return (lineIdx, valueIdx)
+    raise Exception("There's no collect point in the map.")
 
 def getInitialGraph(width, height, map) -> Graph:
     possibleStartGraphs = []
@@ -131,9 +137,25 @@ def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
 
     return None
 
-def aStarSearch():
-    #TODO
-    return "aStarSearch"
+def aStarSearch(graph):
+    goalCoords = getGoalCoords(map)
+    manhattanDistanceHeuristic = lambda move : abs(move[0] - goalCoords[0]) + abs(move[1] - goalCoords[1])
+
+    visitedNodesCoords = [graph.root.coord]
+    graph.expandChildren(visitedNodesCoords, manhattanDistanceHeuristic)
+    nodesList = graph.children
+
+    while nodesList:
+        node = min(nodesList, key=lambda node: node.root.cost)
+        nodesList.remove(node)
+        currentState = node.root
+        if currentState.coord[0] >= 0 and map[currentState.coord[0]][currentState.coord[1]] == constant.COLLECT_POINT:
+            return currentState.output
+        visitedNodesCoords.append(currentState.coord)
+        node.expandChildren(visitedNodesCoords, manhattanDistanceHeuristic)
+        nodesList = nodesList + node.children
+
+    return None
 
 bestRoute = None
 if (algorithm.lower() == "bfs"):
@@ -146,7 +168,8 @@ elif (algorithm.lower() == "ids"):
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = idsSearch(initialGraph, y * x)
 elif (algorithm.lower() == "a_star"):
-    bestRoute = aStarSearch()
+    initialGraph = getInitialGraph(y, x, map)
+    bestRoute = aStarSearch(initialGraph)
 else:
     print("Wrong algorithm passed, please insert a valid one.")
     exit(1)
