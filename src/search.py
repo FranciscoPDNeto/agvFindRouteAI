@@ -9,11 +9,11 @@ class Output:
         self.numTimesPassedLocationPoint = numTimesPassedLocationPoint
         # Coordenadas representadas pela tupla (linha,coluna)
         self.coordsInitPoint = coordsInitPoint
-    
+
     def __str__(self):
         return "{} {} [{}, {}]".format(self.numSteps, self.numTimesPassedLocationPoint, \
             self.coordsInitPoint[0], self.coordsInitPoint[1])
-                    
+
 
 algorithm = sys.argv[1]
 entry = sys.argv[2]
@@ -28,7 +28,7 @@ class State:
         self.cost = cost
         self.currentW = currentW
         self.output = output
-    
+
     def __eq__(self, other):
         return self.coord[0] == other.coord[0] and self.coord[1] == other.coord[1]
 
@@ -51,11 +51,11 @@ class Graph:
                 (1 if map[move[0]][move[1]] == constant.LOCALIZATION_POINT else 0)
             currentW = self.root.currentW + \
                 (1 if map[move[0]][move[1]] != constant.LOCALIZATION_POINT else -1*self.root.currentW)
-            
+
             output = Output(self.root.output.numSteps + 1, numTimesPassedLocationPoint, self.root.output.coordsInitPoint)
             child = Graph(State(move, cost, currentW, output), [], self)
             self.children.append(child)
-    
+
     def __str__(self):
         return "State {} from parent {} from children {}".format(self.root.coord, self.parent, self.children)
 
@@ -65,7 +65,7 @@ class Graph:
             (self.root.coord[0] - 1, self.root.coord[1]),\
             (self.root.coord[0], self.root.coord[1] - 1),\
             (self.root.coord[0], self.root.coord[1] + 1)]
-        
+
         if (not heuristic):
             for move in possibleMoves:
                 self.addChild(move, self.root.cost + 1, explored)
@@ -82,7 +82,7 @@ def getInitialGraph(width, height, map) -> Graph:
                 coord = (lineIdx, valueIdx)
                 possibleStartGraphs.append(Graph(State(coord, 1, 0, \
                     Output(1, 1 if value == constant.LOCALIZATION_POINT else 0, coord)), []))
-    
+
     return Graph(State((-2, -2)), possibleStartGraphs)
 
 
@@ -129,7 +129,7 @@ elif (algorithm.lower() == "dfs"):
 elif (algorithm.lower() == "ids"):
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = idsSearch(initialGraph, y * x)
-elif (algorithm.lower() == "a*"):
+elif (algorithm.lower() == "a_star"):
     bestRoute = aStarSearch()
 else:
     print("Wrong algorithm passed, please insert a valid one.")
