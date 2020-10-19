@@ -90,7 +90,7 @@ def bfsSearch():
     #TODO
     return "bfsSearch"
 
-def dfsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
+def dlsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
     currentState = currentGraph.root
     if currentState.coord[0] >= 0 and map[currentState.coord[0]][currentState.coord[1]] == constant.COLLECT_POINT:
         return currentState.output
@@ -102,15 +102,18 @@ def dfsSearch(currentGraph : Graph, maxDepth : int, explored : list) -> Output:
 
     currentGraph.expandChildren(explored)
     for child in currentGraph.children:
-        possibleGoal = dfsSearch(child, maxDepth - 1, explored)
+        possibleGoal = dlsSearch(child, maxDepth - 1, explored)
         if possibleGoal != None:
             return possibleGoal
+
+def dfsSearch(currentGraph : Graph, explored : list) -> Output:
+    return dlsSearch(currentGraph, float('Inf'), [])
 
 def idsSearch(initialGraph : Graph, maxDepth : int) -> Output:
 
     for depth in range(int(maxDepth)):
         explored = []
-        output = dfsSearch(initialGraph, depth, explored)
+        output = dlsSearch(initialGraph, depth, explored)
         if output:
             return output
 
@@ -125,7 +128,7 @@ if (algorithm.lower() == "bfs"):
     bestRoute = bfsSearch()
 elif (algorithm.lower() == "dfs"):
     initialGraph = getInitialGraph(y, x, map)
-    bestRoute = dfsSearch(initialGraph, float("Inf"), [])
+    bestRoute = dfsSearch(initialGraph, [])
 elif (algorithm.lower() == "ids"):
     initialGraph = getInitialGraph(y, x, map)
     bestRoute = idsSearch(initialGraph, y * x)
